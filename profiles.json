@@ -1,0 +1,14 @@
+{
+  "Polar": {
+    "pfp": "https://i.imgur.com/AbC123d.png",
+    "banner": "https://i.imgur.com/XyZ987b.jpg"
+  },
+  "Ch4mpY": {
+    "pfp": "https://cdn.discordapp.com/avatars/.../avatar.png",
+    "banner": "https://i.imgur.com/awesomebanner.png"
+  },
+  "tomo": {
+    "pfp": "https://pfp.narrowarrow.xyz/tomo.png",
+    "banner": "https://cdn.example.com/tomo_banner.jpg"
+  }
+}
