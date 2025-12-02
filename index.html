@@ -5,33 +5,33 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Narrow Arrow Officials</title>
   <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-  <!-- Main Views -->
+  <!-- List View -->
   <div id="list-view">
     <header>
       <h1>Narrow Arrow Officials</h1>
-      <p>Click a level to view leaderboard • Click a player for stats</p>
+      <p>Official levels • Click a level • Click a player for stats</p>
     </header>
     <div class="container">
       <div class="levels-grid" id="levels-grid"></div>
     </div>
   </div>
 
+  <!-- Level Detail View -->
   <div id="detail-view" class="hidden">
     <div class="container">
-      <button id="back-to-levels" class="back-btn">Back to Levels</button>
+      <button id="back-to-levels" class="back-btn"><span>Back</span></button>
       <div class="level-header">
-        <img id="detail-thumb" src="" alt="">
+        <img id="detail-thumb" src="" alt="Level">
         <div>
           <h1 id="detail-name"></h1>
           <p id="detail-creator"></p>
         </div>
       </div>
-      <div class="leaderboard-card">
-        <h2>Loading the leaderboard…</h2>
+      <div class="card">
         <div class="table-container">
           <table id="leaderboard-table">
             <thead>
@@ -49,18 +49,19 @@
     </div>
   </div>
 
+  <!-- Profile View -->
   <div id="profile-view" class="hidden">
     <div class="profile-banner" id="profile-banner"></div>
     <div class="container profile-container">
-      <button id="back-to-leaderboard" class="back-btn">Back to Leaderboard</button>
+      <button id="back-to-leaderboard" class="back-btn"><span>Back</span></button>
       <div class="profile-header">
-        <img id="profile-pfp" src="" alt="PFP">
-        <div>
+        <img id="profile-pfp" src="" alt="Profile picture">
+        <div class="profile-info">
           <h1 id="profile-name"></h1>
-          <div class="stats-grid" id="stats-grid"></div>
+          <div class="stats-horizontal" id="stats-row"></div>
         </div>
       </div>
-      <div class="leaderboard-card">
+      <div class="card">
         <h2>Personal Records</h2>
         <div class="table-container">
           <table>
@@ -68,11 +69,11 @@
               <tr>
                 <th>Level</th>
                 <th>Rank</th>
-                <th>Time</th>
                 <th>Arrow</th>
+                <th>Time</th>
               </tr>
             </thead>
-            <tbody id="profile-records"></tbody>
+            <tbody id="profile-table"></tbody>
           </table>
         </div>
       </div>
