@@ -94,69 +94,75 @@ async function showLevel(index) {
 }
 
 async function loadPlayerProfile(username) {
-  document.getElementById('profile-name').textContent = username;
-  const p = profiles[username] || {};
-  document.getElementById('profile-pfp').src = p.pfp || "assets/defaultpfp.png";
-  document.getElementById('banner').style.backgroundImage = `url(${p.banner || "assets/defaultbanner.jpg"})`;
+  try {
+    document.getElementById('profile-name').textContent = username;
+    const p = profiles[username] || {};
+    document.getElementById('profile-pfp').src = p.pfp || "assets/defaultpfp.png";
+    // Fixed ID from 'banner' → 'profile-banner'
+    document.getElementById('profile-banner').style.backgroundImage = `url(${p.banner || "assets/defaultbanner.jpg"})`;
 
-  const records = [];
-  let totalTime = 0, totalRank = 0, count = 0, bestRank = Infinity, wr = 0;
+    const records = [];
+    let totalTime = 0, totalRank = 0, count = 0, bestRank = Infinity, wr = 0;
 
-  // Fetch ALL level leaderboards in parallel
-  const promises = levels.map(lvl => fetchWithCache(lvl.api));
-  const allLeaderboards = await Promise.allSettled(promises);
+    // Fetch ALL level leaderboards in parallel
+    const promises = levels.map(lvl => fetchWithCache(lvl.api));
+    const allLeaderboards = await Promise.allSettled(promises);
 
-  allLeaderboards.forEach((result, i) => {
-    if (result.status !== 'fulfilled') return;
-    const lb = result.value;
-    const entry = lb.find(e => e.username === username);
-    if (entry) {
-      const rank = lb.indexOf(entry) + 1;
-      records.push({
-        name: levels[i].name,
-        rank,
-        time: entry.completion_time,
-        arrow: entry.arrow_name
-      });
-      totalTime += entry.completion_time;
-      totalRank += rank;
-      count++;
-      if (rank < bestRank) bestRank = rank;
-      if (rank === 1) wr++;
-    }
-  });
+    allLeaderboards.forEach((result, i) => {
+      if (result.status !== 'fulfilled') return;
+      const lb = result.value;
+      const entry = lb.find(e => e.username === username);
+      if (entry) {
+        const rank = lb.indexOf(entry) + 1;
+        records.push({
+          name: levels[i].name,
+          rank,
+          time: entry.completion_time,
+          arrow: entry.arrow_name
+        });
+        totalTime += entry.completion_time;
+        totalRank += rank;
+        count++;
+        if (rank < bestRank) bestRank = rank;
+        if (rank === 1) wr++;
+      }
+    });
 
-  const avgRank = count ? (totalRank / count).toFixed(2) : "-";
-  const avgTime = count ? formatTime(totalTime / count) : "-";
-  const bestText = wr > 0 ? `${wr} World Record${wr > 1 ? 's' : ''}` : bestRank;
+    const avgRank = count ? (totalRank / count).toFixed(2) : "-";
+    const avgTime = count ? formatTime(totalTime / count) : "-";
+    const bestText = wr > 0 ? `${wr} World Record${wr > 1 ? 's' : ''}` : bestRank;
 
-  document.getElementById('stats-row').innerHTML = `
-    <div class="stat-box"><strong>${count}</strong><small>Maps on LB</small></div>
-    <div class="stat-box"><strong>${avgRank}</strong><small>Avg Rank</small></div>
-    <div class="stat-box"><strong>${avgTime}</strong><small>Avg Time</small></div>
-    <div class="stat-box"><strong>${bestText}</strong><small>Best Rank</small></div>
-  `;
-
-  const tbody = document.getElementById('profile-table');
-  tbody.innerHTML = '';
-  records.sort((a, b) => a.rank - b.rank).forEach(r => {
-    const rankClass = r.rank === 1 ? 'rank-1' : r.rank === 2 ? 'rank-2' : r.rank === 3 ? 'rank-3' : '';
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td><a href="#" class="level-link" data-level="${r.name}">${r.name}</a></td>
-      <td><strong class="${rankClass}">${r.rank}</strong></td>
-      <td><img src="${getArrowImg(r.arrow)}" class="arrow-img" alt=""></td>
-      <td><strong>${formatTime(r.time)}</strong></td>
+    document.getElementById('stats-row').innerHTML = `
+      <div class="stat-box"><strong>${count}</strong><small>Maps on LB</small></div>
+      <div class="stat-box"><strong>${avgRank}</strong><small>Avg Rank</small></div>
+      <div class="stat-box"><strong>${avgTime}</strong><small>Avg Time</small></div>
+      <div class="stat-box"><strong>${bestText}</strong><small>Best Rank</small></div>
     `;
-    tr.querySelector('.level-link').onclick = e => {
-      e.preventDefault();
-      const idx = levels.findIndex(l => l.name === r.name);
-      if (idx !== -1) showLevel(idx);
-    };
-    tbody.appendChild(tr);
-  });
 
-  showView('profile');
+    const tbody = document.getElementById('profile-table');
+    tbody.innerHTML = '';
+    records.sort((a, b) => a.rank - b.rank).forEach(r => {
+      const rankClass = r.rank === 1 ? 'rank-1' : r.rank === 2 ? 'rank-2' : r.rank === 3 ? 'rank-3' : '';
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><a href="#" class="level-link" data-level="${r.name}">${r.name}</a></td>
+        <td><strong class="${rankClass}">${r.rank}</strong></td>
+        <td><img src="${getArrowImg(r.arrow)}" class="arrow-img" alt=""></td>
+        <td><strong>${formatTime(r.time)}</strong></td>
+      `;
+      tr.querySelector('.level-link').onclick = e => {
+        e.preventDefault();
+        const idx = levels.findIndex(l => l.name === r.name);
+        if (idx !== -1) showLevel(idx);
+      };
+      tbody.appendChild(tr);
+    });
+
+    showView('profile');
+  } catch (err) {
+    console.error("Failed to load profile:", err);
+    alert("Failed to load profile. Check console for details.");
+  }
 }
 
 // Load data
