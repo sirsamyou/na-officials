@@ -1,1 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Narrow Arrow Leaderboards</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
 
+  <header>
+    <h1>Narrow Arrow Leaderboards</h1>
+    <p>Click any level to view the full leaderboard</p>
+  </header>
+
+  <section id="list-view">
+    <div class="container">
+      <div class="levels-grid" id="levels-grid"></div>
+    </div>
+  </section>
+
+  <section id="detail-view" class="hidden">
+    <div class="container">
+      <button id="back-btn">Back to Levels</button>
+
+      <div class="level-header">
+        <img id="detail-thumb" src="" alt="Level thumbnail">
+        <div class="level-info">
+          <h1 id="detail-name">Level Name</h1>
+          <p id="detail-creator">Creator: Unknown</p>
+        </div>
+      </div>
+
+      <div class="leaderboard-card">
+        <h2>Leaderboard</h2>
+        <div class="table-container">
+          <table id="leaderboard-table">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Arrow</th>
+                <th>Player</th>
+                <th>Time</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboard-body">
+              <tr><td colspan="4" class="loading">Loading levels...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>
