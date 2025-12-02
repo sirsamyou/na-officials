@@ -1,4 +1,4 @@
-let levels = [], profiles = {}, playerCache = new Map();
+let levels = [], profiles = {}, playerCache = new Map(); 
 
 const views = {
   list: document.getElementById('list-view'),
