@@ -51,96 +51,96 @@
     "name": "Dodgy Place",
     "creator": "",
     "api": "https://api.narrowarrow.xyz/leaderboard/Dodgy%20Place?infiniteLeaderboard=true",
-    "thumbnail": "thumbs/Dodgy Place.png"
+    "thumbnail": "thumbs/dodgyplace.png"
   },
   {
     "name": "Turnpike Drift",
     "creator": "",
     "api": "https://api.narrowarrow.xyz/leaderboard/Turnpike%20Drift?infiniteLeaderboard=true",
-    "thumbnail": "thumbs/Turnpike Drift.png"
+    "thumbnail": "thumbs/turnpikedrift.png"
   },
   {
     "name": "Fast and Slow",
     "creator": "",
     "api": "https://api.narrowarrow.xyz/leaderboard/Fast%20and%20Slow?infiniteLeaderboard=true",
-    "thumbnail": "thumbs/Fast and Slow.png"
+    "thumbnail": "thumbs/fastandslow.png"
   },
   {
     "name": "Attractive Curves",
     "creator": "",
     "api": "https://api.narrowarrow.xyz/leaderboard/Attractive%20Curves?infiniteLeaderboard=true",
-    "thumbnail": "thumbs/Attractive Curves.png"
+    "thumbnail": "thumbs/attractivecurves.png"
   },
   {
     "name": "Speedrun Highway",
     "creator": "",
     "api": "https://api.narrowarrow.xyz/leaderboard/Speedrun%20Highway?infiniteLeaderboard=true",
-    "thumbnail": "thumbs/Speedrun Highway.png"
+    "thumbnail": "thumbs/speedrunhighway.png"
   },
   {
     "name": "Maze Rally",
     "creator": "",
     "api": "https://api.narrowarrow.xyz/leaderboard/Maze%20Rally?infiniteLeaderboard=true",
-    "thumbnail": "thumbs/Maze Rally.png"
+    "thumbnail": "thumbs/mazerally.png"
   },
   {
     "name": "Polar Drift",
     "creator": "",
     "api": "https://api.narrowarrow.xyz/leaderboard/Polar%20Drift?infiniteLeaderboard=true",
-    "thumbnail": "thumbs/Polar Drift.png"
+    "thumbnail": "thumbs/polardrift.png"
   },
   {
     "name": "Spinning Square",
     "creator": "",
     "api": "https://api.narrowarrow.xyz/leaderboard/Spinning%20Square?infiniteLeaderboard=true",
-    "thumbnail": "thumbs/Spinning Square.png"
+    "thumbnail": "thumbs/spinningsquare.png"
   },
   {
     "name": "Windmill Land",
     "creator": "",
     "api": "https://api.narrowarrow.xyz/leaderboard/Windmill%20Land?infiniteLeaderboard=true",
-    "thumbnail": "thumbs/Windmill Land.png"
+    "thumbnail": "thumbs/windmillland.png"
   },
   {
     "name": "Highspeed Madness",
     "creator": "",
     "api": "https://api.narrowarrow.xyz/leaderboard/Highspeed%20Madness?infiniteLeaderboard=true",
-    "thumbnail": "thumbs/Highspeed Madness.png"
+    "thumbnail": "thumbs/highspeedmadness.png"
   },
   {
     "name": "Green Eyes",
     "creator": "",
     "api": "https://api.narrowarrow.xyz/leaderboard/Green%20Eyes?infiniteLeaderboard=true",
-    "thumbnail": "thumbs/Green Eyes.png"
+    "thumbnail": "thumbs/greeneyes.png"
   },
   {
     "name": "Level Icy",
     "creator": "Polar",
     "api": "https://api.narrowarrow.xyz/leaderboard/Level%20Icy?infiniteLeaderboard=true",
-    "thumbnail": "thumbs/Level Icy.png"
+    "thumbnail": "thumbs/levelicy.png"
   },
   {
     "name": "Energex",
     "creator": "sqm",
     "api": "https://api.narrowarrow.xyz/leaderboard/Energex?infiniteLeaderboard=true",
-    "thumbnail": "thumbs/Energex.png"
+    "thumbnail": "thumbs/energex.png"
   },
   {
     "name": "Chain Reaction",
     "creator": "sqm",
     "api": "https://api.narrowarrow.xyz/leaderboard/Chain%20Reaction?infiniteLeaderboard=true",
-    "thumbnail": "thumbs/Chain Reaction.png"
+    "thumbnail": "thumbs/chainreaction.png"
   },
   {
     "name": "Polar Rally",
     "creator": "Polar",
     "api": "https://api.narrowarrow.xyz/leaderboard/Polar%20Rally?infiniteLeaderboard=true",
-    "thumbnail": "thumbs/Polar Rally.png"
+    "thumbnail": "thumbs/polarrally.png"
   },
   {
     "name": "Stopzone Cycle",
     "creator": "Polar",
     "api": "https://api.narrowarrow.xyz/leaderboard/Stopzone%20Cycle?infiniteLeaderboard=true",
-    "thumbnail": "thumbs/Stopzone Cycle.png"
+    "thumbnail": "thumbs/stopzonecycle.png"
   }
 ]
