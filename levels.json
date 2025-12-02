@@ -1,0 +1,146 @@
+[
+  {
+    "name": "Diamond Rally",
+    "creator": "",
+    "api": "https://api.narrowarrow.xyz/leaderboard/Diamond%20Rally?infiniteLeaderboard=true",
+    "thumbnail": "thumbs/Diamond Rally.png"
+  },
+  {
+    "name": "Blue Slides",
+    "creator": "",
+    "api": "https://api.narrowarrow.xyz/leaderboard/Blue%20Slides?infiniteLeaderboard=true",
+    "thumbnail": "thumbs/Blue Slides.png"
+  },
+  {
+    "name": "Green Cross",
+    "creator": "",
+    "api": "https://api.narrowarrow.xyz/leaderboard/Green%20Cross?infiniteLeaderboard=true",
+    "thumbnail": "thumbs/Green Cross.png"
+  },
+  {
+    "name": "Arrow Factory",
+    "creator": "",
+    "api": "https://api.narrowarrow.xyz/leaderboard/Arrow%20Factory?infiniteLeaderboard=true",
+    "thumbnail": "thumbs/Arrow Factory.png"
+  },
+  {
+    "name": "Square Rally",
+    "creator": "",
+    "api": "https://api.narrowarrow.xyz/leaderboard/Square%20Rally?infiniteLeaderboard=true",
+    "thumbnail": "thumbs/Square Rally.png"
+  },
+  {
+    "name": "Level 1",
+    "creator": "",
+    "api": "https://api.narrowarrow.xyz/leaderboard/Level%201?infiniteLeaderboard=true",
+    "thumbnail": "thumbs/Level 1.png"
+  },
+  {
+    "name": "Chaotic Rally",
+    "creator": "",
+    "api": "https://api.narrowarrow.xyz/leaderboard/Chaotic%20Rally?infiniteLeaderboard=true",
+    "thumbnail": "thumbs/Chaotic Rally.png"
+  },
+  {
+    "name": "Colossal R",
+    "creator": "",
+    "api": "https://api.narrowarrow.xyz/leaderboard/Colossal%20R?infiniteLeaderboard=true",
+    "thumbnail": "thumbs/Colossal R.png"
+  },
+  {
+    "name": "Dodgy Place",
+    "creator": "",
+    "api": "https://api.narrowarrow.xyz/leaderboard/Dodgy%20Place?infiniteLeaderboard=true",
+    "thumbnail": "thumbs/Dodgy Place.png"
+  },
+  {
+    "name": "Turnpike Drift",
+    "creator": "",
+    "api": "https://api.narrowarrow.xyz/leaderboard/Turnpike%20Drift?infiniteLeaderboard=true",
+    "thumbnail": "thumbs/Turnpike Drift.png"
+  },
+  {
+    "name": "Fast and Slow",
+    "creator": "",
+    "api": "https://api.narrowarrow.xyz/leaderboard/Fast%20and%20Slow?infiniteLeaderboard=true",
+    "thumbnail": "thumbs/Fast and Slow.png"
+  },
+  {
+    "name": "Attractive Curves",
+    "creator": "",
+    "api": "https://api.narrowarrow.xyz/leaderboard/Attractive%20Curves?infiniteLeaderboard=true",
+    "thumbnail": "thumbs/Attractive Curves.png"
+  },
+  {
+    "name": "Speedrun Highway",
+    "creator": "",
+    "api": "https://api.narrowarrow.xyz/leaderboard/Speedrun%20Highway?infiniteLeaderboard=true",
+    "thumbnail": "thumbs/Speedrun Highway.png"
+  },
+  {
+    "name": "Maze Rally",
+    "creator": "",
+    "api": "https://api.narrowarrow.xyz/leaderboard/Maze%20Rally?infiniteLeaderboard=true",
+    "thumbnail": "thumbs/Maze Rally.png"
+  },
+  {
+    "name": "Polar Drift",
+    "creator": "",
+    "api": "https://api.narrowarrow.xyz/leaderboard/Polar%20Drift?infiniteLeaderboard=true",
+    "thumbnail": "thumbs/Polar Drift.png"
+  },
+  {
+    "name": "Spinning Square",
+    "creator": "",
+    "api": "https://api.narrowarrow.xyz/leaderboard/Spinning%20Square?infiniteLeaderboard=true",
+    "thumbnail": "thumbs/Spinning Square.png"
+  },
+  {
+    "name": "Windmill Land",
+    "creator": "",
+    "api": "https://api.narrowarrow.xyz/leaderboard/Windmill%20Land?infiniteLeaderboard=true",
+    "thumbnail": "thumbs/Windmill Land.png"
+  },
+  {
+    "name": "Highspeed Madness",
+    "creator": "",
+    "api": "https://api.narrowarrow.xyz/leaderboard/Highspeed%20Madness?infiniteLeaderboard=true",
+    "thumbnail": "thumbs/Highspeed Madness.png"
+  },
+  {
+    "name": "Green Eyes",
+    "creator": "",
+    "api": "https://api.narrowarrow.xyz/leaderboard/Green%20Eyes?infiniteLeaderboard=true",
+    "thumbnail": "thumbs/Green Eyes.png"
+  },
+  {
+    "name": "Level Icy",
+    "creator": "",
+    "api": "https://api.narrowarrow.xyz/leaderboard/Level%20Icy?infiniteLeaderboard=true",
+    "thumbnail": "thumbs/Level Icy.png"
+  },
+  {
+    "name": "Energex",
+    "creator": "",
+    "api": "https://api.narrowarrow.xyz/leaderboard/Energex?infiniteLeaderboard=true",
+    "thumbnail": "thumbs/Energex.png"
+  },
+  {
+    "name": "Chain Reaction",
+    "creator": "",
+    "api": "https://api.narrowarrow.xyz/leaderboard/Chain%20Reaction?infiniteLeaderboard=true",
+    "thumbnail": "thumbs/Chain Reaction.png"
+  },
+  {
+    "name": "Polar Rally",
+    "creator": "",
+    "api": "https://api.narrowarrow.xyz/leaderboard/Polar%20Rally?infiniteLeaderboard=true",
+    "thumbnail": "thumbs/Polar Rally.png"
+  },
+  {
+    "name": "Stopzone Cycle",
+    "creator": "",
+    "api": "https://api.narrowarrow.xyz/leaderboard/Stopzone%20Cycle?infiniteLeaderboard=true",
+    "thumbnail": "thumbs/Stopzone Cycle.png"
+  }
+]
