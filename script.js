@@ -3,7 +3,7 @@ const detailView = document.getElementById('detail-view');
 const grid = document.getElementById('levels-grid');
 const backBtn = document.getElementById('back-btn');
 
-let levels = []; // will be filled from JSON
+let levels = [];
 
 function formatTime(seconds) {
   const mins = Math.floor(seconds / 60);
@@ -16,8 +16,9 @@ function formatTime(seconds) {
 
 function getArrowImage(arrowName) {
   if (!arrowName) return "assets/narrow.png";
-  if (arrowName.toLowerCase().includes("speedy")) return "assets/speedy.png";
-  if (arrowName.toLowerCase().includes("energy")) return "assets/energy.png";
+  const lower = arrowName.toLowerCase();
+  if (lower.includes("speedy")) return "assets/speedy.png";
+  if (lower.includes("energy")) return "assets/energy.png";
   return "assets/narrow.png";
 }
 
@@ -55,9 +56,12 @@ async function showLevel(index) {
   const tbody = document.getElementById('leaderboard-body');
   tbody.innerHTML = '<tr><td colspan="4" class="loading">Loading leaderboard...</td></tr>';
 
+  // This line fixes CORS on GitHub Pages
+  const proxyUrl = "https://corsproxy.io/?" + encodeURIComponent(level.api);
+  
   try {
-    const res = await fetch(level.api);
-    if (!res.ok) throw new Error('API error');
+    const res = await fetch(proxyUrl);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
 
     data.sort((a, b) => a.completion_time - b.completion_time);
@@ -66,7 +70,7 @@ async function showLevel(index) {
     data.slice(0, 500).forEach((entry, i) => {
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td><strong>#${i + 1}</strong></td>
+        <td><strong>#${i < 3 ? ' style="color:#ffd700"' : ''}>#${i + 1}</strong></td>
         <td><img src="${getArrowImage(entry.arrow_name)}" alt="${entry.arrow_name || 'Narrow'}" class="arrow-img"></td>
         <td>${escapeHtml(entry.username)}</td>
         <td><strong>${formatTime(entry.completion_time)}</strong></td>
@@ -74,27 +78,25 @@ async function showLevel(index) {
       tbody.appendChild(tr);
     });
   } catch (err) {
-    tbody.innerHTML = '<tr><td colspan="4" style="color:#ff6b6b;">Failed to load leaderboard</td></tr>';
-    console.error(err);
+    tbody.innerHTML = '<tr><td colspan="4" style="color:#ff6b6b;">Failed to load leaderboard<br><small>Try refreshing</small></td></tr>';
+    console.error("Leaderboard fetch failed:", err);
   }
 }
 
-backBtn.addEventListener('click', () => {
+backBtn.onclick = () => {
   detailView.classList.add('hidden');
   listView.classList.remove('hidden');
-});
+};
 
-// Load levels from JSON file
+// Load levels.json
 fetch('levels.json')
-  .then(res => {
-    if (!res.ok) throw new Error('Failed to load levels.json');
-    return res.json();
-  })
+  .then(r => r.ok ? r.json() : Promise.reject('levels.json not found'))
   .then(data => {
     levels = data;
     renderLevels();
   })
   .catch(err => {
-    grid.innerHTML = `<p style="color:#ff6b6b; text-align:center; padding:40px;">Error loading levels.json<br>${err.message}</p>`;
-    console.error(err);
+    grid.innerHTML = `<p style="color:#ff6b6b;text-align:center;padding:60px;font-size:1.2rem">
+      Error loading levels.json<br><small>${err}</small>
+    </p>`;
   });
