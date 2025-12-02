@@ -9,43 +9,43 @@
     "name": "Blue Slides",
     "creator": "",
     "api": "https://api.narrowarrow.xyz/leaderboard/Blue%20Slides?infiniteLeaderboard=true",
-    "thumbnail": "thumbs/Blue Slides.png"
+    "thumbnail": "thumbs/blueslides.png"
   },
   {
     "name": "Green Cross",
     "creator": "Adam237",
     "api": "https://api.narrowarrow.xyz/leaderboard/Green%20Cross?infiniteLeaderboard=true",
-    "thumbnail": "thumbs/Green Cross.png"
+    "thumbnail": "thumbs/greencross.png"
   },
   {
     "name": "Arrow Factory",
     "creator": "",
     "api": "https://api.narrowarrow.xyz/leaderboard/Arrow%20Factory?infiniteLeaderboard=true",
-    "thumbnail": "thumbs/Arrow Factory.png"
+    "thumbnail": "thumbs/arrowfactory.png"
   },
   {
     "name": "Square Rally",
     "creator": "",
     "api": "https://api.narrowarrow.xyz/leaderboard/Square%20Rally?infiniteLeaderboard=true",
-    "thumbnail": "thumbs/Square Rally.png"
+    "thumbnail": "thumbs/squarerally.png"
   },
   {
     "name": "Level 1",
     "creator": "",
     "api": "https://api.narrowarrow.xyz/leaderboard/Level%201?infiniteLeaderboard=true",
-    "thumbnail": "thumbs/Level 1.png"
+    "thumbnail": "thumbs/level1.png"
   },
   {
     "name": "Chaotic Rally",
     "creator": "",
     "api": "https://api.narrowarrow.xyz/leaderboard/Chaotic%20Rally?infiniteLeaderboard=true",
-    "thumbnail": "thumbs/Chaotic Rally.png"
+    "thumbnail": "thumbs/chaoticrally.png"
   },
   {
     "name": "Colossal R",
     "creator": "",
     "api": "https://api.narrowarrow.xyz/leaderboard/Colossal%20R?infiniteLeaderboard=true",
-    "thumbnail": "thumbs/Colossal R.png"
+    "thumbnail": "thumbs/colossalr.png"
   },
   {
     "name": "Dodgy Place",
