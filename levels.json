@@ -13,7 +13,7 @@
   },
   {
     "name": "Green Cross",
-    "creator": "",
+    "creator": "Adam237",
     "api": "https://api.narrowarrow.xyz/leaderboard/Green%20Cross?infiniteLeaderboard=true",
     "thumbnail": "thumbs/Green Cross.png"
   },
@@ -115,31 +115,31 @@
   },
   {
     "name": "Level Icy",
-    "creator": "",
+    "creator": "Polar",
     "api": "https://api.narrowarrow.xyz/leaderboard/Level%20Icy?infiniteLeaderboard=true",
     "thumbnail": "thumbs/Level Icy.png"
   },
   {
     "name": "Energex",
-    "creator": "",
+    "creator": "sqm",
     "api": "https://api.narrowarrow.xyz/leaderboard/Energex?infiniteLeaderboard=true",
     "thumbnail": "thumbs/Energex.png"
   },
   {
     "name": "Chain Reaction",
-    "creator": "",
+    "creator": "sqm",
     "api": "https://api.narrowarrow.xyz/leaderboard/Chain%20Reaction?infiniteLeaderboard=true",
     "thumbnail": "thumbs/Chain Reaction.png"
   },
   {
     "name": "Polar Rally",
-    "creator": "",
+    "creator": "Polar",
     "api": "https://api.narrowarrow.xyz/leaderboard/Polar%20Rally?infiniteLeaderboard=true",
     "thumbnail": "thumbs/Polar Rally.png"
   },
   {
     "name": "Stopzone Cycle",
-    "creator": "",
+    "creator": "Polar",
     "api": "https://api.narrowarrow.xyz/leaderboard/Stopzone%20Cycle?infiniteLeaderboard=true",
     "thumbnail": "thumbs/Stopzone Cycle.png"
   }
