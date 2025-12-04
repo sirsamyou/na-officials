@@ -1,41 +1,33 @@
-let levels = [], profiles = {}, cache = new Map(), lastView = 'officials';
+let levels = [], profiles = {}, playerCache = new Map(); 
 
 const views = {
-  officials: document.getElementById('officials-view'),
-  leaderboards: document.getElementById('leaderboards-view'),
+  list: document.getElementById('list-view'),
   detail: document.getElementById('detail-view'),
   profile: document.getElementById('profile-view')
 };
 
-document.querySelectorAll('.tab').forEach(t => t.onclick = () => switchTab(t.dataset.view));
-document.querySelectorAll('.lb-tab').forEach(t => t.onclick = () => switchLbTab(t.dataset.lb));
-document.getElementById('back-to-officials').onclick = () => switchTab('officials');
-document.getElementById('back-to-prev').onclick = () => switchTab(lastView);
+document.getElementById('back-to-levels').onclick = () => showView('list');
+document.getElementById('back-to-leaderboard').onclick = () => showView('detail');
 
-function switchTab(view) {
-  Object.values(views).forEach(v => v.classList.remove('active'));
-  views[view].classList.add('active');
-  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.view === view));
-  lastView = view === 'detail' || view === 'profile' ? lastView : view;
-  if (view === 'leaderboards') renderGlobalLb('wr');
+function showView(name) {
+  Object.values(views).forEach(v => v.classList.add('hidden'));
+  views[name].classList.remove('hidden');
+  if (name === 'list') window.scrollTo(0, 0);
 }
 
-function switchLbTab(type) {
-  document.querySelectorAll('.lb-tab').forEach(t => t.classList.toggle('active', t.dataset.lb === type));
-  renderGlobalLb(type);
+function formatTime(seconds) {
+  if (!seconds) return "-";
+  const m = Math.floor(seconds / 60);
+  const s = (seconds % 60).toFixed(3);
+  return m > 0 ? `${m}:${String(s).padStart(6, '0')}` : s;
 }
 
-function formatTime(s) {
-  if (!s) return "-";
-  const m = Math.floor(s / 60);
-  const secs = (s % 60).toFixed(3);
-  return m > 0 ? `${m}:${String(secs).padStart(6,'0')}` : secs;
-}
-
-function getArrowImg(n) {
-  if (!n) return "assets/narrow.png";
-  n = n.toLowerCase();
-  return n.includes("speedy") ? "assets/speedy.png" : n.includes("energy") ? "assets/energy.png" : "assets/narrow.png";
+function getArrowImg(name) {
+  if (!name) return "assets/narrow.png";
+  const n = name.toLowerCase();
+  if (n.includes("speedy")) return "assets/speedy.png";
+  if (n.includes("energy")) return "assets/energy.png";
+  return "assets/narrow.png";
 }
 
 function renderLevels() {
@@ -44,165 +36,143 @@ function renderLevels() {
   levels.forEach((lvl, i) => {
     const card = document.createElement('div');
     card.className = 'level-card';
-    card.innerHTML = `<img src="${lvl.thumbnail}" onerror="this.src='thumbs/placeholder.png'"><h3>${lvl.name}</h3><p>${lvl.creator ? 'by ' + lvl.creator : 'Official'}</p>`;
+    card.innerHTML = `
+      <img src="${lvl.thumbnail}" onerror="this.src='thumbs/placeholder.png'" alt="${lvl.name}">
+      <h3>${lvl.name}</h3>
+      <p>${lvl.creator ? 'by ' + lvl.creator : 'Official'}</p>
+    `;
     card.onclick = () => showLevel(i);
     grid.appendChild(card);
   });
 }
 
-async function fetchLb(url) {
-  if (cache.has(url)) return cache.get(url);
-  const res = await fetch("https://corsproxy.io/?" + encodeURIComponent(url));
-  if (!res.ok) throw new Error();
+async function fetchWithCache(url) {
+  if (playerCache.has(url)) return playerCache.get(url);
+  const proxy = "https://corsproxy.io/?" + encodeURIComponent(url);
+  const res = await fetch(proxy);
+  if (!res.ok) throw new Error("Failed");
   const data = await res.json();
-  cache.set(url, data);
+  playerCache.set(url, data);
   return data;
 }
 
-async function showLevel(i) {
-  const lvl = levels[i];
+async function showLevel(index) {
+  const lvl = levels[index];
   document.getElementById('detail-name').textContent = lvl.name;
-  document.getElementById('detail-creator').textContent = lvl.creator ? `by ${lvl.creator}` : 'Official';
+  document.getElementById('detail-creator').textContent = lvl.creator ? `by ${lvl.creator}` : 'Official Level';
   document.getElementById('detail-thumb').src = lvl.thumbnail;
 
   const tbody = document.getElementById('leaderboard-body');
   tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:2rem;color:#64748b">Loading…</td></tr>';
 
-  switchTab('detail');
+  showView('detail');
 
   try {
-    const data = await fetchLb(lvl.api);
-    data.sort((a,b) => a.completion_time - b.completion_time);
+    const data = await fetchWithCache(lvl.api);
+    data.sort((a, b) => a.completion_time - b.completion_time);
+
     tbody.innerHTML = '';
-    data.slice(0,500).forEach((r,j) => {
-      const rank = j+1;
-      const cls = rank===1 ? 'rank-1' : rank===2 ? 'rank-2' : rank===3 ? 'rank-3' : '';
+    data.slice(0, 500).forEach((run, i) => {
+      const rank = i + 1;
+      const rankClass = rank === 1 ? 'rank-1' : rank === 2 ? 'rank-2' : rank === 3 ? 'rank-3' : '';
       const tr = document.createElement('tr');
-      tr.innerHTML = `<td><strong class="${cls}">${rank}</strong></td>
-                      <td><img src="${getArrowImg(r.arrow_name)}" class="arrow-img"></td>
-                      <td><a href="#" class="player-link" data-user="${r.username}">${r.username}</a></td>
-                      <td><strong>${formatTime(r.completion_time)}</strong></td>`;
-      tr.querySelector('.player-link').onclick = e => { e.preventDefault(); loadProfile(r.username); };
+      tr.innerHTML = `
+        <td><strong class="${rankClass}">${rank}</strong></td>
+        <td><img src="${getArrowImg(run.arrow_name)}" class="arrow-img" alt=""></td>
+        <td><a href="#" class="player-link" data-user="${run.username}">${run.username}</a></td>
+        <td><strong>${formatTime(run.completion_time)}</strong></td>
+      `;
+      tr.querySelector('.player-link').onclick = (e) => {
+        e.preventDefault();
+        loadPlayerProfile(run.username);
+      };
       tbody.appendChild(tr);
     });
-  } catch { tbody.innerHTML = '<tr><td colspan="4" style="color:#fca5a5">Failed to load</td></tr>'; }
+  } catch (e) {
+    tbody.innerHTML = '<tr><td colspan="4" style="color:#fca5a5">Failed to load leaderboard</td></tr>';
+  }
 }
 
-async function loadProfile(name) {
-  document.getElementById('profile-name').textContent = name;
-  const p = profiles[name] || {};
-  document.getElementById('profile-pfp').src = p.pfp || "assets/defaultpfp.png";
+async function loadPlayerProfile(username) {
+  try {
+    document.getElementById('profile-name').textContent = username;
+    const p = profiles[username] || {};
+    document.getElementById('profile-pfp').src = p.pfp || "assets/defaultpfp.png";
+    // Fixed ID from 'banner' → 'profile-banner'
+    document.getElementById('profile-banner').style.backgroundImage = `url(${p.banner || "assets/defaultbanner.jpg"})`;
 
-  const stats = { maps:0, wr:0, best:Infinity, total:0, ranks:[], times:[] };
+    const records = [];
+    let totalTime = 0, totalRank = 0, count = 0, bestRank = Infinity, wr = 0;
 
-  const all = await Promise.allSettled(levels.map(l => fetchLb(l.api)));
-  all.forEach((res, i) => {
-    if (res.status !== 'fulfilled') return;
-    const entry = res.value.find(e => e.username === name);
-    if (entry) {
-      const rank = res.value.indexOf(entry) + 1;
-      stats.maps++;
-      stats.total += entry.completion_time;
-      stats.ranks.push(rank);
-      stats.times.push(entry.completion_time);
-      if (rank === 1) stats.wr++;
-      if (rank < stats.best) stats.best = rank;
-    }
-  });
+    // Fetch ALL level leaderboards in parallel
+    const promises = levels.map(lvl => fetchWithCache(lvl.api));
+    const allLeaderboards = await Promise.allSettled(promises);
 
-  const avgRank = stats.maps ? (stats.ranks.reduce((a,b)=>a+b,0)/stats.maps).toFixed(2) : "-";
-  const avgTime = stats.maps ? formatTime(stats.times.reduce((a,b)=>a+b,0)/stats.maps) : "-";
-  const bestText = stats.wr > 0 ? `${stats.wr} WR${stats.wr>1?'s':''}` : stats.best;
-
-  document.getElementById('stats-row').innerHTML = `
-    <div class="stat-box"><strong>${stats.maps}</strong><small>Maps on LB</small></div>
-    <div class="stat-box"><strong>${bestText}</strong><small>Best Rank</small></div>
-    <div class="stat-box"><strong>${avgRank}</strong><small>Avg Rank</small></div>
-    <div class="stat-box"><strong>${avgTime}</strong><small>Avg Time</small></div>
-    <div class="stat-box"><strong>${formatTime(stats.total)}</strong><small>Total Time</small></div>
-  `;
-
-  const tbody = document.getElementById('profile-table');
-  tbody.innerHTML = '';
-  all.forEach((res, i) => {
-    if (res.status !== 'fulfilled') return;
-    const entry = res.value.find(e => e.username === name);
-    if (entry) {
-      const rank = res.value.indexOf(entry) + 1;
-      const cls = rank===1 ? 'rank-1' : rank===2 ? 'rank-2' : rank===3 ? 'rank-3' : '';
-      const tr = document.createElement('tr');
-      tr.innerHTML = `<td><a href="#" class="level-link" data-lvl="${i}">${levels[i].name}</a></td>
-                      <td><strong class="${cls}">${rank}</strong></td>
-                      <td><img src="${getArrowImg(entry.arrow_name)}" class="arrow-img"></td>
-                      <td><strong>${formatTime(entry.completion_time)}</strong></td>`;
-      tr.querySelector('.level-link').onclick = e => { e.preventDefault(); showLevel(i); };
-      tbody.appendChild(tr);
-    }
-  });
-
-  switchTab('profile');
-}
-
-async function renderGlobalLb(type) {
-  const tbody = document.getElementById('global-lb-body');
-  tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;padding:2rem;color:#64748b">Loading…</td></tr>';
-
-  const players = {};
-  const all = await Promise.allSettled(levels.map(l => fetchLb(l.api)));
-  all.forEach(res => {
-    if (res.status !== 'fulfilled') return;
-    res.value.forEach(r => {
-      if (!players[r.username]) players[r.username] = { wr:0, best:Infinity, total:0, count:0, times:[], ranks:[] };
-      const p = players[r.username];
-      const rank = res.value.indexOf(r) + 1;
-      p.total += r.completion_time;
-      p.count++;
-      p.times.push(r.completion_time);
-      p.ranks.push(rank);
-      if (rank === 1) p.wr++;
-      if (rank < p.best) p.best = rank;
+    allLeaderboards.forEach((result, i) => {
+      if (result.status !== 'fulfilled') return;
+      const lb = result.value;
+      const entry = lb.find(e => e.username === username);
+      if (entry) {
+        const rank = lb.indexOf(entry) + 1;
+        records.push({
+          name: levels[i].name,
+          rank,
+          time: entry.completion_time,
+          arrow: entry.arrow_name
+        });
+        totalTime += entry.completion_time;
+        totalRank += rank;
+        count++;
+        if (rank < bestRank) bestRank = rank;
+        if (rank === 1) wr++;
+      }
     });
-  });
 
-  const list = Object.entries(players).map(([name, s]) => ({
-    name,
-    wr: s.wr,
-    best: s.best,
-    total: s.total,
-    avgTime: s.count ? s.times.reduce((a,b)=>a+b,0)/s.count : Infinity,
-    avgRank: s.count ? s.ranks.reduce((a,b)=>a+b,0)/s.count : Infinity
-  }));
+    const avgRank = count ? (totalRank / count).toFixed(2) : "-";
+    const avgTime = count ? formatTime(totalTime / count) : "-";
+    const bestText = wr > 0 ? `${wr} World Record${wr > 1 ? 's' : ''}` : bestRank;
 
-  if (type === 'wr') list.sort((a,b) => b.wr - a.wr || a.best - b.best);
-  if (type === 'total') list.sort((a,b) => a.total - b.total);
-  if (type === 'avgtime') list.sort((a,b) => a.avgTime - b.avgTime);
-  if (type === 'avgrank') list.sort((a,b) => a.avgRank - b.avgRank);
+    document.getElementById('stats-row').innerHTML = `
+      <div class="stat-box"><strong>${count}</strong><small>Maps on LB</small></div>
+      <div class="stat-box"><strong>${avgRank}</strong><small>Avg Rank</small></div>
+      <div class="stat-box"><strong>${avgTime}</strong><small>Avg Time</small></div>
+      <div class="stat-box"><strong>${bestText}</strong><small>Best Rank</small></div>
+    `;
 
-  const search = document.getElementById('player-search').value.toLowerCase();
-  const filtered = search ? list.filter(p => p.name.toLowerCase().includes(search)) : list;
+    const tbody = document.getElementById('profile-table');
+    tbody.innerHTML = '';
+    records.sort((a, b) => a.rank - b.rank).forEach(r => {
+      const rankClass = r.rank === 1 ? 'rank-1' : r.rank === 2 ? 'rank-2' : r.rank === 3 ? 'rank-3' : '';
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><a href="#" class="level-link" data-level="${r.name}">${r.name}</a></td>
+        <td><strong class="${rankClass}">${r.rank}</strong></td>
+        <td><img src="${getArrowImg(r.arrow)}" class="arrow-img" alt=""></td>
+        <td><strong>${formatTime(r.time)}</strong></td>
+      `;
+      tr.querySelector('.level-link').onclick = e => {
+        e.preventDefault();
+        const idx = levels.findIndex(l => l.name === r.name);
+        if (idx !== -1) showLevel(idx);
+      };
+      tbody.appendChild(tr);
+    });
 
-  tbody.innerHTML = '';
-  filtered.forEach((p,i) => {
-    const val = type==='wr' ? `${p.wr} WR${p.wr>1?'s':''}` :
-                type==='total' ? formatTime(p.total) :
-                type==='avgtime' ? formatTime(p.avgTime) :
-                p.avgRank.toFixed(2);
-    const tr = document.createElement('tr');
-    tr.innerHTML = `<td><strong>${i+1}</strong></td>
-                    <td><a href="#" class="player-link" data-user="${p.name}">${p.name}</a></td>
-                    <td><strong>${val}</strong></td>`;
-    tr.querySelector('.player-link').onclick = e => { e.preventDefault(); loadProfile(p.name); };
-    tbody.appendChild(tr);
-  });
+    showView('profile');
+  } catch (err) {
+    console.error("Failed to load profile:", err);
+    alert("Failed to load profile. Check console for details.");
+  }
 }
 
-document.getElementById('player-search').oninput = () => renderGlobalLb(document.querySelector('.lb-tab.active').dataset.lb);
-
+// Load data
 Promise.all([
   fetch('levels.json').then(r => r.ok ? r.json() : []),
   fetch('profiles.json').then(r => r.ok ? r.json() : {})
-]).then(([l,p]) => {
-  levels = l; profiles = p;
+]).then(([lvl, prof]) => {
+  levels = lvl;
+  profiles = prof;
   renderLevels();
-  switchTab('officials');
+}).catch(err => {
+  document.body.innerHTML = `<h1 style="text-align:center;color:#fca5a5;padding:5rem">Failed to load data: ${err.message}</h1>`;
 });
