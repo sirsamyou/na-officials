@@ -3,40 +3,27 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>NA Officials</title>
+  <title>Narrow Arrow Officials</title>
   <link rel="stylesheet" href="style.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
 
-  <!-- Top Navigation Bar -->
-  <nav class="top-nav">
-    <div class="nav-left">
-      <h1>NA Officials</h1>
-    </div>
-    <div class="nav-center">
-      <button class="tab-btn active" data-tab="officials">Officials</button>
-      <button class="tab-btn" data-tab="leaderboards">Leaderboards</button>
-    </div>
-    <div class="nav-right">
-      <a href="https://discord.gg/sSMrWKFP4m" target="_blank" class="discord-btn">
-        <i class="fab fa-discord"></i>
-      </a>
-    </div>
-  </nav>
-
-  <!-- Officials View (Levels List) -->
-  <div id="officials-view" class="view active">
+  <!-- List View -->
+  <div id="list-view">
+    <header>
+      <h1>Narrow Arrow Officials</h1>
+      <p>Leaderboards for Official Narrow Arrow Levels</p>
+    </header>
     <div class="container">
       <div class="levels-grid" id="levels-grid"></div>
     </div>
   </div>
 
   <!-- Level Detail View -->
-  <div id="detail-view" class="view hidden">
+  <div id="detail-view" class="hidden">
     <div class="container">
-      <button id="back-to-levels" class="back-btn">Back to Levels</button>
+      <button id="back-to-levels" class="back-btn"><span>Back</span></button>
       <div class="level-header">
         <img id="detail-thumb" src="" alt="Level">
         <div>
@@ -63,15 +50,15 @@
   </div>
 
   <!-- Profile View -->
-  <div id="profile-view" class="view hidden">
+  <div id="profile-view" class="hidden">
     <div class="profile-banner" id="profile-banner"></div>
     <div class="container profile-container">
-      <button id="back-from-profile" class="back-btn">Back</button>
+      <button id="back-to-leaderboard" class="back-btn"><span>Back</span></button>
       <div class="profile-header">
         <img id="profile-pfp" src="" alt="Profile picture">
         <div class="profile-info">
           <h1 id="profile-name"></h1>
-          <div class="stats-grid" id="stats-grid"></div>
+          <div class="stats-horizontal" id="stats-row"></div>
         </div>
       </div>
       <div class="card">
@@ -87,32 +74,6 @@
               </tr>
             </thead>
             <tbody id="profile-table"></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Leaderboards View -->
-  <div id="leaderboards-view" class="view hidden">
-    <div class="container">
-      <button id="back-to-officials" class="back-btn">Back to Officials</button>
-
-      <div class="lb-controls">
-        <input type="text" id="player-search" placeholder="Search player..." />
-        <div class="lb-tabs">
-          <button class="lb-tab active" data-lb="wr">World Records</button>
-          <button class="lb-tab" data-lb="total">Total Time</button>
-          <button class="lb-tab" data-lb="avg-time">Avg Time</button>
-          <button class="lb-tab" data-lb="avg-rank">Avg Rank</button>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="table-container">
-          <table id="global-lb-table">
-            <thead id="global-lb-head"></thead>
-            <tbody id="global-lb-body"></tbody>
           </table>
         </div>
       </div>
