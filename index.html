@@ -3,77 +3,116 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Narrow Arrow Officials</title>
+  <title>NA Officials</title>
   <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
+  <!-- Navigation -->
+  <nav class="nav-bar">
+    <div class="nav-container">
+      <h1 class="nav-title">NA Officials</h1>
+      
+      <div class="nav-tabs">
+        <button id="tab-officials" class="nav-tab active">Officials</button>
+        <button id="tab-leaderboards" class="nav-tab">Leaderboards</button>
+      </div>
 
-  <!-- List View -->
-  <div id="list-view">
-    <header>
-      <h1>Narrow Arrow Officials</h1>
-      <p>Leaderboards for Official Narrow Arrow Levels</p>
-    </header>
-    <div class="container">
-      <div class="levels-grid" id="levels-grid"></div>
+      <a href="https://discord.gg/sSMrWKFP4m" target="_blank" class="discord-btn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+        </svg>
+      </a>
     </div>
-  </div>
+  </nav>
 
-  <!-- Level Detail View -->
-  <div id="detail-view" class="hidden">
-    <div class="container">
-      <button id="back-to-levels" class="back-btn"><span>Back</span></button>
-      <div class="level-header">
-        <img id="detail-thumb" src="" alt="Level">
-        <div>
-          <h1 id="detail-name"></h1>
-          <p id="detail-creator"></p>
+  <div class="main-container">
+    <!-- Officials View -->
+    <div id="officials-view">
+      <div id="list-view">
+        <div class="levels-grid" id="levels-grid"></div>
+      </div>
+
+      <!-- Level Detail -->
+      <div id="detail-view" class="hidden">
+        <button id="back-to-levels" class="back-btn">← Back</button>
+        <div class="level-header">
+          <img id="detail-thumb" src="" alt="Level">
+          <div>
+            <h1 id="detail-name"></h1>
+            <p id="detail-creator"></p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Arrow</th>
+                  <th>Player</th>
+                  <th>Time</th>
+                </tr>
+              </thead>
+              <tbody id="leaderboard-body"></tbody>
+            </table>
+          </div>
         </div>
       </div>
-      <div class="card">
-        <div class="table-container">
-          <table id="leaderboard-table">
-            <thead>
-              <tr>
-                <th>Rank</th>
-                <th>Arrow</th>
-                <th>Player</th>
-                <th>Time</th>
-              </tr>
-            </thead>
-            <tbody id="leaderboard-body"></tbody>
-          </table>
+
+      <!-- Profile -->
+      <div id="profile-view" class="hidden">
+        <div class="profile-banner" id="profile-banner"></div>
+        <div class="profile-content">
+          <button id="back-to-leaderboard" class="back-btn">← Back</button>
+          <div class="profile-header">
+            <img id="profile-pfp" src="" alt="Profile">
+            <div class="profile-info">
+              <h1 id="profile-name"></h1>
+              <div class="stats-grid" id="stats-grid"></div>
+            </div>
+          </div>
+          <div class="card">
+            <h2>Personal Records</h2>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Level</th>
+                    <th>Rank</th>
+                    <th>Arrow</th>
+                    <th>Time</th>
+                  </tr>
+                </thead>
+                <tbody id="profile-table"></tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- Profile View -->
-  <div id="profile-view" class="hidden">
-    <div class="profile-banner" id="profile-banner"></div>
-    <div class="container profile-container">
-      <button id="back-to-leaderboard" class="back-btn"><span>Back</span></button>
-      <div class="profile-header">
-        <img id="profile-pfp" src="" alt="Profile picture">
-        <div class="profile-info">
-          <h1 id="profile-name"></h1>
-          <div class="stats-horizontal" id="stats-row"></div>
+    <!-- Leaderboards View -->
+    <div id="leaderboards-view" class="hidden">
+      <div class="leaderboard-controls">
+        <div class="lb-tabs">
+          <button id="lb-worldrecords" class="lb-tab active">World Records</button>
+          <button id="lb-totaltime" class="lb-tab">Total Time</button>
+          <button id="lb-avgtime" class="lb-tab">Average Time</button>
+          <button id="lb-avgrank" class="lb-tab">Average Rank</button>
+        </div>
+        <div class="search-box">
+          <input type="text" id="player-search" placeholder="Search players..." />
         </div>
       </div>
+
       <div class="card">
-        <h2>Personal Records</h2>
         <div class="table-container">
           <table>
             <thead>
-              <tr>
-                <th>Level</th>
-                <th>Rank</th>
-                <th>Arrow</th>
-                <th>Time</th>
-              </tr>
+              <tr id="lb-table-header"></tr>
             </thead>
-            <tbody id="profile-table"></tbody>
+            <tbody id="lb-table-body"></tbody>
           </table>
         </div>
       </div>
