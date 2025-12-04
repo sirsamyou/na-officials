@@ -43,6 +43,9 @@
             <p id="detail-creator"></p>
           </div>
         </div>
+        <div class="search-box" style="margin-bottom: 1.5rem;">
+          <input type="text" id="level-search" placeholder="Search players..." />
+        </div>
         <div class="card">
           <div class="table-container">
             <table>
@@ -96,7 +99,7 @@
     <div id="leaderboards-view" class="hidden">
       <div class="leaderboard-controls">
         <div class="lb-tabs">
-          <button id="lb-worldrecords" class="lb-tab active">World Records</button>
+          <button id="lb-bestrank" class="lb-tab active">Best Rank</button>
           <button id="lb-totaltime" class="lb-tab">Total Time</button>
           <button id="lb-avgtime" class="lb-tab">Average Time</button>
           <button id="lb-avgrank" class="lb-tab">Average Rank</button>
@@ -107,6 +110,7 @@
       </div>
 
       <div class="card">
+        <p id="leaderboard-note" class="lb-note hidden">* Average Time, Average Rank, and Total Time require being on all leaderboards</p>
         <div class="table-container">
           <table>
             <thead>
