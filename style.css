@@ -308,6 +308,9 @@ tbody tr:last-child td {
   text-decoration: none;
   font-weight: 600;
   transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .player-link:hover, .level-link:hover {
@@ -321,6 +324,15 @@ tbody tr:last-child td {
   border-radius: 6px;
   vertical-align: middle;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.player-pfp {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(59, 130, 246, 0.3);
+  vertical-align: middle;
 }
 
 /* Profile */
@@ -371,10 +383,12 @@ tbody tr:last-child td {
 }
 
 .stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  display: flex;
+  flex-direction: row;
   gap: 1rem;
   margin-top: 1rem;
+  flex-wrap: nowrap;
+  overflow-x: auto;
 }
 
 .stat-box {
@@ -385,6 +399,8 @@ tbody tr:last-child td {
   text-align: center;
   border: 1px solid rgba(148, 163, 184, 0.2);
   transition: all 0.3s ease;
+  min-width: 140px;
+  flex-shrink: 0;
 }
 
 .stat-box:hover {
@@ -490,6 +506,13 @@ tbody tr:last-child td {
   opacity: 0.6;
 }
 
+.lb-note {
+  color: #94a3b8;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  font-style: italic;
+}
+
 /* Loading */
 .loading {
   text-align: center;
@@ -546,7 +569,7 @@ tbody tr:last-child td {
   }
 
   .stats-grid {
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    justify-content: flex-start;
   }
 
   .leaderboard-controls {
