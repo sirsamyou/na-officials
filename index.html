@@ -3,61 +3,29 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>NA Officials</title>
+  <title>Narrow Arrow Officials</title>
   <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-  <!-- Header -->
-  <header class="top-bar">
-    <div class="logo">NA Officials</div>
-    <nav class="tabs">
-      <button class="tab active" data-view="officials">Officials</button>
-      <button class="tab" data-view="leaderboards">Leaderboards</button>
-    </nav>
-    <a href="https://discord.gg/sSMrWKFP4m" target="_blank" class="discord-btn">
-      <i class="ti ti-brand-discord"></i>
-    </a>
-  </header>
-
-  <!-- Officials View -->
-  <div id="officials-view" class="view active">
+  <!-- List View -->
+  <div id="list-view">
+    <header>
+      <h1>Narrow Arrow Officials</h1>
+      <p>Leaderboards for Official Narrow Arrow Levels</p>
+    </header>
     <div class="container">
       <div class="levels-grid" id="levels-grid"></div>
     </div>
   </div>
 
-  <!-- Leaderboards View -->
-  <div id="leaderboards-view" class="view">
-    <div class="container">
-      <div class="search-bar">
-        <input type="text" id="player-search" placeholder="Search player..." />
-      </div>
-      <div class="lb-tabs">
-        <button class="lb-tab active" data-lb="wr">World Records</button>
-        <button class="lb-tab" data-lb="total">Total Time</button>
-        <button class="lb-tab" data-lb="avgtime">Avg Time</button>
-        <button class="lb-tab" data-lb="avgrank">Avg Rank</button>
-      </div>
-      <div class="card">
-        <div class="table-container">
-          <table id="global-lb">
-            <thead><tr><th>Rank</th><th>Player</th><th>Value</th></tr></thead>
-            <tbody id="global-lb-body"></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- Level Detail View -->
-  <div id="detail-view" class="view hidden">
+  <div id="detail-view" class="hidden">
     <div class="container">
-      <button class="back-btn" id="back-to-officials">Back to Officials</button>
+      <button id="back-to-levels" class="back-btn"><span>Back</span></button>
       <div class="level-header">
-        <img id="detail-thumb" src="" alt="">
+        <img id="detail-thumb" src="" alt="Level">
         <div>
           <h1 id="detail-name"></h1>
           <p id="detail-creator"></p>
@@ -65,8 +33,15 @@
       </div>
       <div class="card">
         <div class="table-container">
-          <table>
-            <thead><tr><th>Rank</th><th>Arrow</th><th>Player</th><th>Time</th></tr></thead>
+          <table id="leaderboard-table">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Arrow</th>
+                <th>Player</th>
+                <th>Time</th>
+              </tr>
+            </thead>
             <tbody id="leaderboard-body"></tbody>
           </table>
         </div>
@@ -75,21 +50,29 @@
   </div>
 
   <!-- Profile View -->
-  <div id="profile-view" class="view hidden">
-    <div class="container">
-      <button class="back-btn" id="back-to-prev">Back</button>
+  <div id="profile-view" class="hidden">
+    <div class="profile-banner" id="profile-banner"></div>
+    <div class="container profile-container">
+      <button id="back-to-leaderboard" class="back-btn"><span>Back</span></button>
       <div class="profile-header">
-        <img id="profile-pfp" src="" alt="PFP">
+        <img id="profile-pfp" src="" alt="Profile picture">
         <div class="profile-info">
           <h1 id="profile-name"></h1>
-          <div class="stats-row" id="stats-row"></div>
+          <div class="stats-horizontal" id="stats-row"></div>
         </div>
       </div>
       <div class="card">
         <h2>Personal Records</h2>
         <div class="table-container">
           <table>
-            <thead><tr><th>Level</th><th>Rank</th><th>Arrow</th><th>Time</th></tr></thead>
+            <thead>
+              <tr>
+                <th>Level</th>
+                <th>Rank</th>
+                <th>Arrow</th>
+                <th>Time</th>
+              </tr>
+            </thead>
             <tbody id="profile-table"></tbody>
           </table>
         </div>
