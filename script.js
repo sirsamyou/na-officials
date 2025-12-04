@@ -4,6 +4,8 @@ let profiles = {};
 let playerCache = new Map();
 let allPlayerStats = [];
 let currentLevelIndex = null;
+let currentLevelData = [];
+let navigationHistory = [];
 
 // DOM elements
 const views = {
@@ -26,11 +28,25 @@ function setupEventListeners() {
   document.getElementById('tab-leaderboards').onclick = () => switchTab('leaderboards');
   
   // Back buttons
-  document.getElementById('back-to-levels').onclick = () => showView('list');
-  document.getElementById('back-to-leaderboard').onclick = () => showView('detail');
+  document.getElementById('back-to-levels').onclick = () => {
+    showView('list');
+    navigationHistory = [];
+  };
+  document.getElementById('back-to-leaderboard').onclick = () => {
+    if (navigationHistory.length > 0) {
+      const lastView = navigationHistory.pop();
+      if (lastView === 'detail') {
+        showView('detail');
+      } else if (lastView === 'leaderboards') {
+        switchTab('leaderboards');
+      }
+    } else {
+      showView('detail');
+    }
+  };
   
   // Leaderboard tabs
-  document.getElementById('lb-worldrecords').onclick = () => switchLeaderboardTab('worldrecords');
+  document.getElementById('lb-bestrank').onclick = () => switchLeaderboardTab('bestrank');
   document.getElementById('lb-totaltime').onclick = () => switchLeaderboardTab('totaltime');
   document.getElementById('lb-avgtime').onclick = () => switchLeaderboardTab('avgtime');
   document.getElementById('lb-avgrank').onclick = () => switchLeaderboardTab('avgrank');
@@ -38,6 +54,10 @@ function setupEventListeners() {
   // Search
   document.getElementById('player-search').oninput = (e) => {
     renderLeaderboardTable(e.target.value);
+  };
+  
+  document.getElementById('level-search').oninput = (e) => {
+    renderLevelLeaderboard(e.target.value);
   };
 }
 
@@ -72,8 +92,10 @@ function showView(name) {
     window.scrollTo(0, 0);
   } else if (name === 'detail') {
     views.detail.classList.remove('hidden');
+    window.scrollTo(0, 0);
   } else if (name === 'profile') {
     views.profile.classList.remove('hidden');
+    window.scrollTo(0, 0);
   }
 }
 
@@ -108,6 +130,14 @@ function getRankClass(rank) {
   if (rank === 2) return 'rank-2';
   if (rank === 3) return 'rank-3';
   return '';
+}
+
+function getPlayerPfp(username) {
+  const p = profiles[username];
+  if (p && p.pfp && p.pfp !== "assets/defaultpfp.png") {
+    return p.pfp;
+  }
+  return null;
 }
 
 // Load data
@@ -153,6 +183,7 @@ async function showLevel(index) {
   document.getElementById('detail-name').textContent = lvl.name;
   document.getElementById('detail-creator').textContent = lvl.creator ? `by ${lvl.creator}` : 'Official Level';
   document.getElementById('detail-thumb').src = lvl.thumbnail;
+  document.getElementById('level-search').value = '';
 
   const tbody = document.getElementById('leaderboard-body');
   tbody.innerHTML = '<tr><td colspan="4" class="loading">Loading leaderboard...</td></tr>';
@@ -162,28 +193,53 @@ async function showLevel(index) {
   try {
     const data = await fetchWithCache(lvl.api);
     data.sort((a, b) => a.completion_time - b.completion_time);
+    currentLevelData = data;
 
-    tbody.innerHTML = '';
-    data.slice(0, 500).forEach((run, i) => {
-      const rank = i + 1;
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td><strong class="${getRankClass(rank)}">${rank}</strong></td>
-        <td><img src="${getArrowImg(run.arrow_name)}" class="arrow-img" alt=""></td>
-        <td><a href="#" class="player-link">${run.username}</a></td>
-        <td><strong>${formatTime(run.completion_time)}</strong></td>
-      `;
-      
-      tr.querySelector('.player-link').onclick = (e) => {
-        e.preventDefault();
-        loadPlayerProfile(run.username);
-      };
-      
-      tbody.appendChild(tr);
-    });
+    renderLevelLeaderboard();
   } catch (e) {
     console.error('Failed to load leaderboard:', e);
     tbody.innerHTML = '<tr><td colspan="4" style="color:#fca5a5;text-align:center;padding:2rem">Failed to load leaderboard</td></tr>';
+  }
+}
+
+function renderLevelLeaderboard(searchQuery = '') {
+  const tbody = document.getElementById('leaderboard-body');
+  tbody.innerHTML = '';
+  
+  let filteredData = currentLevelData;
+  if (searchQuery) {
+    filteredData = currentLevelData.filter(run => 
+      run.username.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }
+  
+  filteredData.slice(0, 500).forEach((run) => {
+    const rank = currentLevelData.indexOf(run) + 1;
+    const tr = document.createElement('tr');
+    
+    const pfp = getPlayerPfp(run.username);
+    const playerHTML = pfp 
+      ? `<img src="${pfp}" class="player-pfp" alt="">${run.username}`
+      : run.username;
+    
+    tr.innerHTML = `
+      <td><strong class="${getRankClass(rank)}">${rank}</strong></td>
+      <td><img src="${getArrowImg(run.arrow_name)}" class="arrow-img" alt=""></td>
+      <td><a href="#" class="player-link">${playerHTML}</a></td>
+      <td><strong>${formatTime(run.completion_time)}</strong></td>
+    `;
+    
+    tr.querySelector('.player-link').onclick = (e) => {
+      e.preventDefault();
+      navigationHistory.push('detail');
+      loadPlayerProfile(run.username);
+    };
+    
+    tbody.appendChild(tr);
+  });
+  
+  if (filteredData.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:2rem;color:#64748b">No players found</td></tr>';
   }
 }
 
@@ -223,14 +279,16 @@ async function loadPlayerProfile(username) {
       }
     });
 
-    const avgRank = count ? (totalRank / count).toFixed(2) : "-";
-    const avgTime = count ? formatTime(totalTime / count) : "-";
-    const totalTimeFormatted = count ? formatTime(totalTime) : "-";
+    const allLevelsCompleted = count === levels.length;
+    const asterisk = allLevelsCompleted ? '' : '*';
+    
+    const avgRank = count ? (totalRank / count).toFixed(2) + asterisk : "-";
+    const avgTime = count ? formatTime(totalTime / count) + asterisk : "-";
+    const totalTimeFormatted = count ? formatTime(totalTime) + asterisk : "-";
     const bestText = wr > 0 ? `${wr} WR${wr > 1 ? 's' : ''}` : bestRank;
 
-    // Render stats in correct order: Maps on LB, Best Rank, Average Rank, Average Time, Total Time
     document.getElementById('stats-grid').innerHTML = `
-      <div class="stat-box"><strong>${count}</strong><small>Maps on LB</small></div>
+      <div class="stat-box"><strong>${count}</strong><small>Levels on LB</small></div>
       <div class="stat-box"><strong>${bestText}</strong><small>Best Rank</small></div>
       <div class="stat-box"><strong>${avgRank}</strong><small>Average Rank</small></div>
       <div class="stat-box"><strong>${avgTime}</strong><small>Average Time</small></div>
@@ -252,7 +310,10 @@ async function loadPlayerProfile(username) {
       tr.querySelector('.level-link').onclick = e => {
         e.preventDefault();
         const idx = levels.findIndex(l => l.name === r.name);
-        if (idx !== -1) showLevel(idx);
+        if (idx !== -1) {
+          navigationHistory = [];
+          showLevel(idx);
+        }
       };
       
       tbody.appendChild(tr);
@@ -307,7 +368,8 @@ async function calculateAllPlayerStats() {
     allPlayerStats = Array.from(playerStatsMap.values()).map(stats => ({
       ...stats,
       avgRank: stats.totalRank / stats.count,
-      avgTime: stats.totalTime / stats.count
+      avgTime: stats.totalTime / stats.count,
+      allLevelsCompleted: stats.count === levels.length
     }));
 
     renderLeaderboardTable();
@@ -321,6 +383,14 @@ async function calculateAllPlayerStats() {
 function switchLeaderboardTab(tab) {
   document.querySelectorAll('.lb-tab').forEach(t => t.classList.remove('active'));
   document.getElementById(`lb-${tab}`).classList.add('active');
+  
+  const note = document.getElementById('leaderboard-note');
+  if (tab === 'bestrank') {
+    note.classList.add('hidden');
+  } else {
+    note.classList.remove('hidden');
+  }
+  
   renderLeaderboardTable();
 }
 
@@ -330,10 +400,16 @@ function renderLeaderboardTable(searchQuery = '') {
   const thead = document.getElementById('lb-table-header');
   const tbody = document.getElementById('lb-table-body');
   
-  // Filter players by search
+  // Filter players
   let filteredPlayers = allPlayerStats;
+  
+  // For tabs other than bestrank, only show players who completed all levels
+  if (activeTab !== 'bestrank') {
+    filteredPlayers = filteredPlayers.filter(p => p.allLevelsCompleted);
+  }
+  
   if (searchQuery) {
-    filteredPlayers = allPlayerStats.filter(p => 
+    filteredPlayers = filteredPlayers.filter(p => 
       p.username.toLowerCase().includes(searchQuery.toLowerCase())
     );
   }
@@ -342,17 +418,16 @@ function renderLeaderboardTable(searchQuery = '') {
   let sorted = [...filteredPlayers];
   
   switch (activeTab) {
-    case 'worldrecords':
+    case 'bestrank':
       sorted.sort((a, b) => {
-        if (b.worldRecords !== a.worldRecords) return b.worldRecords - a.worldRecords;
-        return a.bestRank - b.bestRank;
+        if (a.bestRank !== b.bestRank) return a.bestRank - b.bestRank;
+        return b.count - a.count;
       });
       thead.innerHTML = `
         <th>Rank</th>
         <th>Player</th>
-        <th>World Records</th>
         <th>Best Rank</th>
-        <th>Maps on LB</th>
+        <th>Levels on LB</th>
       `;
       break;
       
@@ -362,7 +437,6 @@ function renderLeaderboardTable(searchQuery = '') {
         <th>Rank</th>
         <th>Player</th>
         <th>Total Time</th>
-        <th>Maps on LB</th>
       `;
       break;
       
@@ -372,7 +446,6 @@ function renderLeaderboardTable(searchQuery = '') {
         <th>Rank</th>
         <th>Player</th>
         <th>Average Time</th>
-        <th>Maps on LB</th>
       `;
       break;
       
@@ -382,7 +455,6 @@ function renderLeaderboardTable(searchQuery = '') {
         <th>Rank</th>
         <th>Player</th>
         <th>Average Rank</th>
-        <th>Maps on LB</th>
       `;
       break;
   }
@@ -404,16 +476,21 @@ function renderLeaderboardTable(searchQuery = '') {
     else if (rank === 2) rankClass = 'rank-2';
     else if (rank === 3) rankClass = 'rank-3';
     
+    const pfp = getPlayerPfp(player.username);
+    const playerHTML = pfp 
+      ? `<img src="${pfp}" class="player-pfp" alt="">${player.username}`
+      : player.username;
+    
     let content = `
       <td><strong class="${rankClass}">${rank}</strong></td>
-      <td><a href="#" class="player-link">${player.username}</a></td>
+      <td><a href="#" class="player-link">${playerHTML}</a></td>
     `;
     
     switch (activeTab) {
-      case 'worldrecords':
+      case 'bestrank':
+        const bestText = player.worldRecords > 0 ? `${player.worldRecords} WR${player.worldRecords > 1 ? 's' : ''}` : player.bestRank;
         content += `
-          <td><strong>${player.worldRecords}</strong></td>
-          <td><strong>${player.worldRecords > 0 ? `${player.worldRecords} WR${player.worldRecords > 1 ? 's' : ''}` : player.bestRank}</strong></td>
+          <td><strong>${bestText}</strong></td>
           <td>${player.count}</td>
         `;
         break;
@@ -421,21 +498,18 @@ function renderLeaderboardTable(searchQuery = '') {
       case 'totaltime':
         content += `
           <td><strong>${formatTime(player.totalTime)}</strong></td>
-          <td>${player.count}</td>
         `;
         break;
         
       case 'avgtime':
         content += `
           <td><strong>${formatTime(player.avgTime)}</strong></td>
-          <td>${player.count}</td>
         `;
         break;
         
       case 'avgrank':
         content += `
           <td><strong>${player.avgRank.toFixed(2)}</strong></td>
-          <td>${player.count}</td>
         `;
         break;
     }
@@ -444,6 +518,7 @@ function renderLeaderboardTable(searchQuery = '') {
     
     tr.querySelector('.player-link').onclick = (e) => {
       e.preventDefault();
+      navigationHistory.push('leaderboards');
       switchTab('officials');
       loadPlayerProfile(player.username);
     };
