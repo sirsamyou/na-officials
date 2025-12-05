@@ -6,6 +6,7 @@ let allPlayerStats = [];
 let currentLevelIndex = null;
 let currentLevelData = [];
 let navigationHistory = [];
+let currentProfileUsername = null;
 
 // DOM elements
 const views = {
@@ -13,6 +14,7 @@ const views = {
   list: document.getElementById('list-view'),
   detail: document.getElementById('detail-view'),
   profile: document.getElementById('profile-view'),
+  compare: document.getElementById('compare-view'),
   leaderboards: document.getElementById('leaderboards-view')
 };
 
@@ -32,6 +34,7 @@ function setupEventListeners() {
     showView('list');
     navigationHistory = [];
   };
+  
   document.getElementById('back-to-leaderboard').onclick = () => {
     if (navigationHistory.length > 0) {
       const lastView = navigationHistory.pop();
@@ -39,11 +42,38 @@ function setupEventListeners() {
         showView('detail');
       } else if (lastView === 'leaderboards') {
         switchTab('leaderboards');
+      } else if (lastView === 'list') {
+        showView('list');
       }
     } else {
-      showView('detail');
+      showView('list');
     }
   };
+
+  document.getElementById('back-to-profile').onclick = () => {
+    showView('profile');
+  };
+
+  // Compare button
+  document.getElementById('compare-btn').onclick = () => {
+    document.getElementById('current-player-name').textContent = currentProfileUsername;
+    document.getElementById('compare-player-input').value = '';
+    document.getElementById('compare-results').classList.add('hidden');
+    showView('compare');
+  };
+
+  document.getElementById('start-compare-btn').onclick = () => {
+    const player2 = document.getElementById('compare-player-input').value.trim();
+    if (player2) {
+      startComparison(currentProfileUsername, player2);
+    }
+  };
+
+  document.getElementById('compare-player-input').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      document.getElementById('start-compare-btn').click();
+    }
+  });
   
   // Leaderboard tabs
   document.getElementById('lb-bestrank').onclick = () => switchLeaderboardTab('bestrank');
@@ -86,6 +116,7 @@ function showView(name) {
   views.list.classList.add('hidden');
   views.detail.classList.add('hidden');
   views.profile.classList.add('hidden');
+  views.compare.classList.add('hidden');
   
   if (name === 'list') {
     views.list.classList.remove('hidden');
@@ -95,6 +126,9 @@ function showView(name) {
     window.scrollTo(0, 0);
   } else if (name === 'profile') {
     views.profile.classList.remove('hidden');
+    window.scrollTo(0, 0);
+  } else if (name === 'compare') {
+    views.compare.classList.remove('hidden');
     window.scrollTo(0, 0);
   }
 }
@@ -246,6 +280,7 @@ function renderLevelLeaderboard(searchQuery = '') {
 // Load player profile
 async function loadPlayerProfile(username) {
   try {
+    currentProfileUsername = username;
     document.getElementById('profile-name').textContent = username;
     
     const p = profiles[username] || {};
@@ -324,6 +359,244 @@ async function loadPlayerProfile(username) {
     console.error("Failed to load profile:", err);
     alert("Failed to load profile. Check console for details.");
   }
+}
+
+// Compare feature
+async function startComparison(player1, player2) {
+  try {
+    document.getElementById('compare-results').classList.remove('hidden');
+    
+    // Set player names and pfps
+    document.getElementById('compare-name-1').textContent = player1;
+    document.getElementById('compare-name-2').textContent = player2;
+    
+    const p1 = profiles[player1] || {};
+    const p2 = profiles[player2] || {};
+    document.getElementById('compare-pfp-1').src = p1.pfp || "assets/defaultpfp.png";
+    document.getElementById('compare-pfp-2').src = p2.pfp || "assets/defaultpfp.png";
+    
+    // Set table headers
+    document.getElementById('compare-th-1').textContent = player1;
+    document.getElementById('compare-th-2').textContent = player2;
+    
+    // Fetch all leaderboards
+    const promises = levels.map(lvl => fetchWithCache(lvl.api));
+    const allLeaderboards = await Promise.allSettled(promises);
+    
+    // Calculate stats for both players
+    const player1Stats = {
+      records: [],
+      totalTime: 0,
+      totalRank: 0,
+      count: 0,
+      bestRank: Infinity,
+      worldRecords: 0
+    };
+    
+    const player2Stats = {
+      records: [],
+      totalTime: 0,
+      totalRank: 0,
+      count: 0,
+      bestRank: Infinity,
+      worldRecords: 0
+    };
+    
+    let player1Points = 0;
+    let player2Points = 0;
+    
+    allLeaderboards.forEach((result, i) => {
+      if (result.status !== 'fulfilled') return;
+      const lb = result.value;
+      
+      const entry1 = lb.find(e => e.username === player1);
+      const entry2 = lb.find(e => e.username === player2);
+      
+      if (entry1) {
+        const rank = lb.indexOf(entry1) + 1;
+        player1Stats.records.push({
+          levelName: levels[i].name,
+          rank,
+          time: entry1.completion_time,
+          arrow: entry1.arrow_name
+        });
+        player1Stats.totalTime += entry1.completion_time;
+        player1Stats.totalRank += rank;
+        player1Stats.count++;
+        if (rank < player1Stats.bestRank) player1Stats.bestRank = rank;
+        if (rank === 1) player1Stats.worldRecords++;
+      }
+      
+      if (entry2) {
+        const rank = lb.indexOf(entry2) + 1;
+        player2Stats.records.push({
+          levelName: levels[i].name,
+          rank,
+          time: entry2.completion_time,
+          arrow: entry2.arrow_name
+        });
+        player2Stats.totalTime += rank;
+        player2Stats.totalRank += rank;
+        player2Stats.count++;
+        if (rank < player2Stats.bestRank) player2Stats.bestRank = rank;
+        if (rank === 1) player2Stats.worldRecords++;
+      }
+      
+      // Calculate points for this level
+      if (entry1 && entry2) {
+        const rank1 = lb.indexOf(entry1) + 1;
+        const rank2 = lb.indexOf(entry2) + 1;
+        if (rank1 < rank2) {
+          player1Points++;
+        } else if (rank2 < rank1) {
+          player2Points++;
+        }
+      } else if (entry1 && !entry2) {
+        player1Points++;
+      } else if (entry2 && !entry1) {
+        player2Points++;
+      }
+    });
+    
+    // Calculate averages
+    player1Stats.avgRank = player1Stats.count ? player1Stats.totalRank / player1Stats.count : null;
+    player1Stats.avgTime = player1Stats.count ? player1Stats.totalTime / player1Stats.count : null;
+    player2Stats.avgRank = player2Stats.count ? player2Stats.totalRank / player2Stats.count : null;
+    player2Stats.avgTime = player2Stats.count ? player2Stats.totalTime / player2Stats.count : null;
+    
+    // Update scores
+    document.getElementById('compare-score-1').textContent = player1Points;
+    document.getElementById('compare-score-2').textContent = player2Points;
+    
+    // Render stats comparison
+    renderStatsComparison(player1Stats, player2Stats);
+    
+    // Render level comparison table
+    renderLevelComparison(player1Stats, player2Stats, player1, player2);
+    
+  } catch (err) {
+    console.error("Failed to compare players:", err);
+    alert("Failed to compare players. Make sure both player names are correct.");
+  }
+}
+
+function renderStatsComparison(stats1, stats2) {
+  const grid = document.getElementById('stats-comparison-grid');
+  grid.innerHTML = '';
+  
+  const stats = [
+    {
+      label: 'Levels on Leaderboard',
+      val1: stats1.count,
+      val2: stats2.count,
+      format: v => v
+    },
+    {
+      label: 'Best Rank',
+      val1: stats1.worldRecords > 0 ? `${stats1.worldRecords} WR${stats1.worldRecords > 1 ? 's' : ''}` : stats1.bestRank,
+      val2: stats2.worldRecords > 0 ? `${stats2.worldRecords} WR${stats2.worldRecords > 1 ? 's' : ''}` : stats2.bestRank,
+      compare: (v1, v2) => {
+        const r1 = typeof v1 === 'number' ? v1 : 1;
+        const r2 = typeof v2 === 'number' ? v2 : 1;
+        return r1 - r2;
+      }
+    },
+    {
+      label: 'Average Rank',
+      val1: stats1.avgRank,
+      val2: stats2.avgRank,
+      format: v => v ? v.toFixed(2) : 'N/A',
+      compare: (v1, v2) => (v1 || Infinity) - (v2 || Infinity)
+    },
+    {
+      label: 'Average Time',
+      val1: stats1.avgTime,
+      val2: stats2.avgTime,
+      format: v => v ? formatTime(v) : 'N/A',
+      compare: (v1, v2) => (v1 || Infinity) - (v2 || Infinity)
+    },
+    {
+      label: 'Total Time',
+      val1: stats1.totalTime,
+      val2: stats2.totalTime,
+      format: v => v ? formatTime(v) : 'N/A',
+      compare: (v1, v2) => v1 - v2
+    }
+  ];
+  
+  stats.forEach(stat => {
+    const item = document.createElement('div');
+    item.className = 'stat-comparison-item';
+    
+    const formatted1 = stat.format ? stat.format(stat.val1) : stat.val1;
+    const formatted2 = stat.format ? stat.format(stat.val2) : stat.val2;
+    
+    let winner1 = false;
+    let winner2 = false;
+    
+    if (stat.compare) {
+      const comparison = stat.compare(stat.val1, stat.val2);
+      if (comparison < 0) winner1 = true;
+      else if (comparison > 0) winner2 = true;
+    }
+    
+    item.innerHTML = `
+      <div class="stat-comparison-label">${stat.label}</div>
+      <div class="stat-comparison-values">
+        <div class="stat-value ${winner1 ? 'winner' : winner2 ? 'loser' : ''}">${formatted1}</div>
+        <div class="stat-separator">VS</div>
+        <div class="stat-value ${winner2 ? 'winner' : winner1 ? 'loser' : ''}">${formatted2}</div>
+      </div>
+    `;
+    
+    grid.appendChild(item);
+  });
+}
+
+function renderLevelComparison(stats1, stats2, player1, player2) {
+  const tbody = document.getElementById('compare-table-body');
+  tbody.innerHTML = '';
+  
+  levels.forEach(level => {
+    const record1 = stats1.records.find(r => r.levelName === level.name);
+    const record2 = stats2.records.find(r => r.levelName === level.name);
+    
+    const tr = document.createElement('tr');
+    
+    let winner = '';
+    if (record1 && record2) {
+      if (record1.rank < record2.rank) {
+        winner = `<span class="winner-badge">${player1}</span>`;
+      } else if (record2.rank < record1.rank) {
+        winner = `<span class="winner-badge">${player2}</span>`;
+      } else {
+        winner = '<span style="color:#64748b">Tie</span>';
+      }
+    } else if (record1) {
+      winner = `<span class="winner-badge">${player1}</span>`;
+    } else if (record2) {
+      winner = `<span class="winner-badge">${player2}</span>`;
+    } else {
+      winner = '<span style="color:#64748b">-</span>';
+    }
+    
+    const player1Cell = record1 
+      ? `<strong class="${getRankClass(record1.rank)}">#${record1.rank}</strong> - ${formatTime(record1.time)}`
+      : '<span style="color:#64748b">N/A</span>';
+      
+    const player2Cell = record2 
+      ? `<strong class="${getRankClass(record2.rank)}">#${record2.rank}</strong> - ${formatTime(record2.time)}`
+      : '<span style="color:#64748b">N/A</span>';
+    
+    tr.innerHTML = `
+      <td><strong>${level.name}</strong></td>
+      <td>${player1Cell}</td>
+      <td>${player2Cell}</td>
+      <td>${winner}</td>
+    `;
+    
+    tbody.appendChild(tr);
+  });
 }
 
 // Calculate all player stats for leaderboards
