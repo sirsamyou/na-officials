@@ -65,30 +65,91 @@
 
       <!-- Profile -->
       <div id="profile-view" class="hidden">
-        <div class="profile-banner" id="profile-banner"></div>
-        <div class="profile-content">
-          <button id="back-to-leaderboard" class="back-btn">← Back</button>
-          <div class="profile-header">
-            <img id="profile-pfp" src="" alt="Profile">
-            <div class="profile-info">
-              <h1 id="profile-name"></h1>
-              <div class="stats-grid" id="stats-grid"></div>
+        <div class="card">
+          <div class="profile-banner" id="profile-banner"></div>
+          <div class="profile-content">
+            <div class="profile-actions">
+              <button id="back-to-leaderboard" class="back-btn">← Back</button>
+              <button id="compare-btn" class="compare-btn">⚔️ Compare</button>
+            </div>
+            <div class="profile-header">
+              <img id="profile-pfp" src="" alt="Profile">
+              <div class="profile-info">
+                <h1 id="profile-name"></h1>
+                <div class="stats-grid" id="stats-grid"></div>
+              </div>
+            </div>
+            <div class="card-inner">
+              <h2>Personal Records</h2>
+              <div class="table-container">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Level</th>
+                      <th>Rank</th>
+                      <th>Arrow</th>
+                      <th>Time</th>
+                    </tr>
+                  </thead>
+                  <tbody id="profile-table"></tbody>
+                </table>
+              </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      <!-- Compare View -->
+      <div id="compare-view" class="hidden">
+        <button id="back-to-profile" class="back-btn">← Back to Profile</button>
+        
+        <div class="compare-input-section">
           <div class="card">
-            <h2>Personal Records</h2>
-            <div class="table-container">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Level</th>
-                    <th>Rank</th>
-                    <th>Arrow</th>
-                    <th>Time</th>
-                  </tr>
-                </thead>
-                <tbody id="profile-table"></tbody>
-              </table>
+            <h2>Compare Players</h2>
+            <div class="compare-input-group">
+              <input type="text" id="compare-player-input" placeholder="Enter player name to compare..." class="compare-input" />
+              <button id="start-compare-btn" class="start-compare-btn">Compare</button>
+            </div>
+            <p class="compare-hint">Enter the name of a player to compare with <span id="current-player-name"></span></p>
+          </div>
+        </div>
+
+        <div id="compare-results" class="hidden">
+          <div class="card">
+            <div class="compare-header">
+              <div class="compare-player-section">
+                <img id="compare-pfp-1" src="" alt="Player 1" class="compare-pfp">
+                <h2 id="compare-name-1"></h2>
+                <div class="compare-score" id="compare-score-1">0</div>
+              </div>
+              <div class="compare-vs">VS</div>
+              <div class="compare-player-section">
+                <img id="compare-pfp-2" src="" alt="Player 2" class="compare-pfp">
+                <h2 id="compare-name-2"></h2>
+                <div class="compare-score" id="compare-score-2">0</div>
+              </div>
+            </div>
+
+            <div class="compare-stats">
+              <h3>Statistics Comparison</h3>
+              <div class="stats-comparison-grid" id="stats-comparison-grid"></div>
+            </div>
+
+            <div class="compare-levels">
+              <h3>Level by Level Comparison</h3>
+              <div class="table-container">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Level</th>
+                      <th id="compare-th-1"></th>
+                      <th id="compare-th-2"></th>
+                      <th>Winner</th>
+                    </tr>
+                  </thead>
+                  <tbody id="compare-table-body"></tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
